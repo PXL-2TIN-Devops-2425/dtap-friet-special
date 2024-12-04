@@ -41,7 +41,9 @@ pipeline {
         stage ('deployment'){
             steps{
                 script {
-                    sh 'docker rm -f -v $(docker container ls -a -q)'
+                    if ($(docker ps -q)){
+                        sh 'docker rm -f -v $(docker container ls -a -q)'
+                    }            
                     appImage.run('-d -p 3000:3000 --name node-app')
                 }
             }
