@@ -22,7 +22,7 @@ pipeline {
         stage ('Build artifact'){
             steps{
                 script {
-                    appImage = docker.build("node-image")
+                    appImage = docker.build("arne788/node-image")
                 }
             }
         }
