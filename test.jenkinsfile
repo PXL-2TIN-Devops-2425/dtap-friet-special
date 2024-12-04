@@ -21,19 +21,19 @@ pipeline {
         }
         stage ('Build artifact'){
             steps{
-                def npmImage = docker.build("npm-image")
+                docker.build("node-image")
             }
         }
         stage ('Push artifact'){
             steps{
-                npmImage.push()
+                Image.push("node-image")
             }
         }
         stage ('deployment'){
             steps{
                 sh 'docker stop $(docker ps -q)'
                 docker {
-                    image 'arne788/npm-image'
+                    Image.run('arne788/node-image')
                     reuseNode true
                 }
             }
