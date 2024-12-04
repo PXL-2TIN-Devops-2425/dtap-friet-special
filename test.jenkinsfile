@@ -29,7 +29,9 @@ pipeline {
         stage ('Push artifact'){
             steps{
                 script {
-                    appImage.push("latest")
+                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        appImage.push("latest")
+                    }
                 }
             }
         }
