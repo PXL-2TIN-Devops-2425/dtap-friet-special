@@ -41,10 +41,11 @@ pipeline {
         stage ('deployment'){
             steps{
                 script {
-                    if ('docker ps -q'.execute().text.trim()){
-                        sh 'docker rm -f -v $(docker container ls -a -q)'
-                    }            
-                    appImage.run('-d -p 3000:3000 --name node-app')
+                def containerList = sh(script: 'docker ps -q', returnStdout: true).trim()
+                if (containerList) {
+                    sh 'docker rm -f -v $(docker container ls -a -q)'
+                }
+                appImage.run('-d -p 3000:3000 --name node-app')     
                 }
             }
         }
