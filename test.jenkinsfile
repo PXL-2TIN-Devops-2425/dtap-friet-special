@@ -21,18 +21,22 @@ pipeline {
         }
         stage ('Build artifact'){
             steps{
-                appImage = docker.build("node-image")
+                script {
+                    appImage = docker.build("node-image")
+                }
             }
         }
         stage ('Push artifact'){
             steps{
-                appImage.push("latest")
+                script {
+                    appImage.push("latest")
+                }
             }
         }
         stage ('deployment'){
             steps{
-                sh 'docker stop $(docker ps -q)'
-                docker {
+                script {
+                    sh 'docker stop $(docker ps -q)'
                     appImage.run('-d -p 3000:3000 --name node-app')
                 }
             }
