@@ -5,7 +5,7 @@ pipeline {
         stage ('cleanup'){
             steps{
                 deleteDir()
-                sh 'docker image prune -f'
+                //sh 'docker image prune -f'
             }
         }
         stage ('Install dependencies'){
