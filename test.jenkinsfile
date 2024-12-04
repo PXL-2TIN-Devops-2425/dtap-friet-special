@@ -41,7 +41,7 @@ pipeline {
         stage ('deployment'){
             steps{
                 script {
-                    sh 'docker stop $(docker ps -q)'
+                    sh 'docker stop $(docker ps -q) && docker rm $(docker ps -a -q)'
                     appImage.run('-d -p 3000:3000 --name node-app')
                 }
             }
