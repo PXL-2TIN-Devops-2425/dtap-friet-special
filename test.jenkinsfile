@@ -5,7 +5,7 @@ pipeline {
         stage ('cleanup'){
             steps{
                 deleteDir()
-                sh 'docker rmi Dockerfile || true'
+                sh 'docker image prune -f'
             }
         }
         stage ('Install dependencies'){
@@ -21,20 +21,19 @@ pipeline {
         }
         stage ('Build artifact'){
             steps{
-                docker.build("node-image")
+                appImage = docker.build("node-image")
             }
         }
         stage ('Push artifact'){
             steps{
-                Image.push("node-image")
+                appImage.push("latest")
             }
         }
         stage ('deployment'){
             steps{
                 sh 'docker stop $(docker ps -q)'
                 docker {
-                    Image.run('arne788/node-image')
-                    reuseNode true
+                    appImage.run('-d -p 3000:3000 --name node-app')
                 }
             }
         }
