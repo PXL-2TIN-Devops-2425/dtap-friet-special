@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage ('cleanup'){
             steps{
-                // TODO
+                deleteDir()
             }
         }
         stage('fetch app code') {
@@ -13,5 +13,38 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/PXL-2TIN-DevOps-Resources/calculator-app-finished.git'
             }
         }
+        stage ('Install dependencies'){
+            steps{
+                sh 'npm install'
+            }
+        }
+        stage ('Build artifact'){
+            steps{
+                script {
+                    appImage = docker.build("arne788/node-image")
+                }
+            }
+        }
+        stage ('Push artifact'){
+            steps{
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                            echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                        """
+                        appImage.push("latest")
+                    }
+                }
+            }
+        }
+        stage ('deployment'){
+            steps{
+                script {
+                sh 'docker rm -f -v $(docker container ls -a -q) || true'
+                appImage.run('-d -p 3000:3000 --name node-app')     
+                }
+            }
+        }
+        
     }
 }
