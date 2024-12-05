@@ -5,7 +5,6 @@ pipeline {
         stage ('cleanup'){
             steps{
                 deleteDir()
-                //sh 'docker image prune -f'
             }
         }
         stage('fetch app code') {
@@ -41,7 +40,7 @@ pipeline {
         stage ('deployment'){
             steps{
                 script {
-                sh 'docker rm -f -v $(docker container ls -a -q)'
+                sh 'docker rm -f -v $(docker container ls -a -q) || true'
                 appImage.run('-d -p 3000:3000 --name node-app')     
                 }
             }
