@@ -4,5 +4,6 @@ opmaak met Markdown.
 a)  chmod 666 /var/run/docker.sock
     gpg --full-generate-key
     pass init <ID>
+    usermod -aG docker jenkins
 
 b) 
