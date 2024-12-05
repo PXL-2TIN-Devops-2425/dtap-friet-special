@@ -4,7 +4,7 @@ pipeline {
         stage('deploy prod') {
             steps {
                 sshagent(['<SSH_KEY_AWS>']) {
-                    sh 'ssh ec2-user@44.206.247.150"docker pull arne788/node-image:latest"'
+                    sh 'ssh ubuntu@44.206.247.150"docker pull arne788/node-image:latest"'
                 }
             }
         }
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sshagent(['<SSH_KEY_AWS>']) {
                     sh '''
-                    ssh ec2-user@44.206.247.150 "
+                    ssh ubuntu@44.206.247.150 "
                     docker stop app || true && \
                     docker rm app || true && \
                     docker run -d app -p 80:3000 arne788/node-image:latest"
@@ -23,7 +23,7 @@ pipeline {
         stage('Test Prod') {
             steps {
                 sshagent(['<SSH_KEY_AWS>']) {
-                    sh 'ssh ec2-user@44.206.247.150 "curl -s -o /dev/null -w \\"%{http_code}\\" http://localhost" | grep 200'
+                    sh 'ssh ubuntu@44.206.247.150 "curl -s -o /dev/null -w \\"%{http_code}\\" http://localhost" | grep 200'
                 }
             }
         }
