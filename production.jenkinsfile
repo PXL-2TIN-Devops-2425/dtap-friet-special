@@ -3,14 +3,14 @@ pipeline {
     stages {
         stage('deploy prod') {
             steps {
-                sshagent(['<SSH_KEY_AWS>']) {
+                sshagent(['SSH_KEY_AWS']) {
                     sh 'ssh ubuntu@ec2-54-91-98-117.compute-1.amazonaws.com "docker pull arne788/node-image:latest"'
                 }
             }
         }
         stage('start prod') {
             steps {
-                sshagent(['<SSH_KEY_AWS>']) {
+                sshagent(['SSH_KEY_AWS']) {
                     sh '''
                     ssh ubuntu@ec2-54-91-98-117.compute-1.amazonaws.com "
                     docker stop app || true && \
@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Test Prod') {
             steps {
-                sshagent(['<SSH_KEY_AWS>']) {
+                sshagent(['SSH_KEY_AWS']) {
                     sh 'ssh ubuntu@ec2-54-91-98-117.compute-1.amazonaws.com "curl -s -o /dev/null -w \\"%{http_code}\\" http://localhost" | grep 200'
                 }
             }
